@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	
+	<bean id = "wheel" class="test04.Wheel">
+		<constructor-arg name="radius" value="10"/>
+		</bean>
+	
+	<bean id="car" class="test04.Car">
+		<property name="wheel" ref="wheel"/>
+	</bean>
+</beans>

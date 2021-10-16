@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="dateBean" class="java.util.Date">
+		<property name="year" value="121"/><!-- set메서드를 사용하기 위해 property 태그 사용 -->
+		<property name="month" value="9"/>
+		<property name="date" value="9"/>
+		</bean>
+		<bean id = "scoreBean" class="test03.Score">
+			<constructor-arg name="name" value="최윤지"/>
+			<constructor-arg name="kor" value="100"/>
+			<constructor-arg name="eng" value="10"/>
+	</bean>
+	
+	<bean id="beanTest" class="test03.BeanTest">
+		<constructor-arg name="date" ref="dateBean" /><!-- 호출시킴  -->
+		<property name="score" ref="scoreBean"/>
+		<property name="boolean" value="true"/>
+		<property name="number" value="10.1"/>
+		<property name="array"> <!-- set메서드가 없으므로 array 태그안에 value를 사용해서 넣어준다  -->
+			<array>
+				<value>홍길동</value>
+				<value>이순신</value>
+				<value>김선달</value>
+			</array>
+		</property>
+		<property name="list">
+			<list>
+				<value>봄</value>
+				<value>여름</value>
+				<value>가을</value>
+				<value>겨울</value>
+			</list>
+		</property>
+		<property name = "set">
+			<set> <!-- set은 집합이다 .집합은 중복 허용하지 않는다.  -->
+				<value>1</value>
+				<value>2</value>
+				<value>3</value>
+				<value>4</value>
+			</set>
+		</property>
+		<property name = "map">
+			<map> <!-- map은 key와 value가 있음으로 value태그로 값을 넣지 않는다. 엔트리 안에서 key와 value 지정  -->
+				<entry>
+					<key><value>spring</value></key>
+					<value>봄</value>
+				</entry>
+				<entry key="summer" value="여름"/>
+				<entry key="fall" value="가을"/>
+				<entry key="winter" value="겨울"/>
+			</map>
+		</property>
+		<property name="properties">
+			<props>
+				<prop key="sky">하늘</prop>
+				<prop key="ground">땅</prop>
+			</props>		
+		</property>
+		
+		<property name="scoreList">
+			<list>
+				<bean class="test03.Score"><!-- 자식태그를 만들어서 우겨넣는 방법 -->
+					<constructor-arg value="오일남"/>
+					<constructor-arg value="100"/>
+					<constructor-arg value="100"/>
+				</bean>
+				<ref bean="scoreBean" /><!-- 참조시키는 방법  -->
+			</list>
+		</property>
+	</bean>
+
+</beans>
