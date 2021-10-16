@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kh.spring.mybatis.MybatisMapper">
+
+<select id="selectPasswordByUserId" resultType="string">
+select password from member where user_id = #{userId}
+</select>
+
+<select id="selectMemberByUserId" resultType="Member">
+	select * from member where user_id = #{userId}
+</select>
+
+<select id="selectRentAndMemberByUserId" resultType="map">
+	select * from member 
+	inner join rent_master using(user_id)
+	where user_id = #{userId}
+</select>
+
+<resultMap type="map" id="rentData">
+		<!-- 
+			column : map에 담을 컬럼명
+			javaType : map에 어떤 타입의 데이터로 저장할 지 결정
+			property : map에 담을 때 사용할 키값
+		 -->
+		 <result column="user_id" javaType="string" property="userId"/>
+		 <result column="rm_idx" javaType="string" property="rmIdx"/>
+		 <result column="rb_idx" javaType="string" property="rbIdx"/>
+		 <result column="rent_book_cnt" javaType="int" property="rentBookCnt"/>
+		  <result column="bk_idx" javaType="string" property="bkIdx"/>
+		  <result column="rentable_date" javaType="date" property="rentableDate"/>
+</resultMap>
+
+	<select id="selectRentBookByUserId" resultMap="rentData">
+	select user_id,rm_idx,rb_idx,rent_book_cnt,bk_idx,rentable_date
+	from member
+	inner join rent_master using(user_id)
+	inner join rent_book using(rm_idx)
+	where user_id = #{userId}
+	</select>
+	
+	<insert id="insertWithDto">
+	insert into member(user_id, password, tell, email)
+	values(#{userId},#{password},#{tell},#{email})
+	</insert>
+	
+	<insert id="insertWithMap">
+		insert into rent_master(rm_idx,user_id,title,rent_book_cnt)
+		values(sc_rm_idx.nextval,#{member.userId},#{title},#{rentBookCnt})
+	</insert>
+	
+	<delete id ="delete">
+		delete from rent_master where user_id = #{userId}
+	</delete>
+	
+	<update id ="update">
+		update member set password = #{password} where user_id = #{userId};
+	</update>
+</mapper>
