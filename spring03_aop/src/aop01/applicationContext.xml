@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<context:component-scan base-package="aop01"/>
+	
+	<!--
+		AOP 용어
+		Advice : 공통관심사를 모듈화한 객체
+		Join Points : 공통관심사를 적용할 수 있는 모든 대상
+				Spring의 Join Points는 bean으로 등록된 모든 객체의 모든 메서드
+		Pointcuts : Join Points 중에서 실제로 Advice를 적용할 대상
+		Aspect : 공통관심사, Advice + Pointcuts(Advisor)
+		target : Pointcut을 가진 객체
+		Weaving : Advice와 target을 결합해 프록시 객체를 생성하는 과정
+		Proxy : Weaving의 결과로 만들어진 프록시 객체
+	  -->
+
+	<!-- 1. Proxy객체를 자동으로 생성 해 줄 bean을 등록
+		    DefaultAdvisorAutoProxyCreator -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+	<!-- 2. advice와 pointcut을 지정할 advisor bean을 등록 
+			AspectJExpressionPointcutAdvisor -->
+	<bean class="org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
+		<property name="advice" ref="myAspect"/>
+		<!-- pointcut expression 
+			* : 모든
+			.. : 0개 이상
+			[접근제한자] 리턴타입 [패키지.클래스.]메서드(매개변수)
+		 -->
+		<property name="expression" value="execution(public * aop01.*.*(..))"/>
+	</bean>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</beans>
