@@ -79,6 +79,15 @@ select password from member where user_id = #{userId}
 		{call sp_rent_extend(#{rbIdx,mode=IN})
 	</update>
 	
+	
+	<insert id="procedureUseTypeHandler">
+		{call sp_rent_insert(
+			#{userId, mode=IN}
+			,#{title,mode=IN}
+			,#{rentBookCnt,mode=IN}
+			,#{bkIdxs,mode=IN, typeHandler=com.kh.spring.common.mybatis.BkIdxsTypeHandler}
+		)
+	</insert>
 	<!--  
 	
 	   //1. 도서명 : 쿠키와 세션, 
