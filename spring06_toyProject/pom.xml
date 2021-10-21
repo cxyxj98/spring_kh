@@ -162,6 +162,13 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<!-- mail 발송 -->
+			<dependency>
+			    <groupId>com.sun.mail</groupId>
+			    <artifactId>javax.mail</artifactId>
+			    <version>1.6.2</version>
+			</dependency>
+		
 	
 		<!-- Test -->
 		<dependency>

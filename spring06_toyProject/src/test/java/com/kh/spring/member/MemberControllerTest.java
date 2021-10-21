@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -33,6 +34,8 @@ public class MemberControllerTest {
    
    @Autowired
    WebApplicationContext wac;
+   
+   @Autowired
    MockMvc mockMvc;
    
    @Before
@@ -43,7 +46,7 @@ public class MemberControllerTest {
    @Test
    public void joinTest() throws Exception {
 	   mockMvc.perform(post("/member/join")
-			   .param("userId","testMethod")
+			   .param("userId","test")
 			   .param("password", "1234")
 			   .param("tell", "010-2222-2221")
 			   .param("email", "aaa@bbb.com"))
@@ -108,6 +111,7 @@ public class MemberControllerTest {
 	   .andDo(print());
 			   
    }
+  
    
 
 }

@@ -11,7 +11,7 @@
 
 <c:if test="${empty authentication}">
 <h2><a href="/member/login">login</a></h2>
-<h2><a href="/member/join-form">회원가입</a></h2>
+<h2><a href="/member/join">회원가입</a></h2>
 </c:if>
 <c:if test="${not empty authentication}">
 <h2>${authentication.userId}님 안녕?</h2>

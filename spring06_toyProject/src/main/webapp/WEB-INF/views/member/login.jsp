@@ -19,8 +19,8 @@
 	<hr>
 	<form action="/member/login" method="post">
 	
-	<c:if test="${not empty param.err}">
-	<span class="valid-msg">아이디나 비밀번호를 확인하세요.</span>
+	<c:if test="${not empty message}">
+	<span class="valid-msg">${message}</span>
 	</c:if>
 	
 	<span class='tit'>ID : </span><input type="text" name="userId" id="userId"><br>
