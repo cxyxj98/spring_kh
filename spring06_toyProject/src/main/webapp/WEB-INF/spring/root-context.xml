@@ -48,5 +48,11 @@
 		<constructor-arg name="requestFactory" ref="SimpleClientHttpRequestFactory"/>
 		</bean>
 		
+		<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
+		
+		<!--비밀번호 암호화:  DelegatingPasswordEncoder -->
+		<bean id="passwordEncoder" 
+		class="org.springframework.security.crypto.factory.PasswordEncoderFactories" 
+		factory-method="createDelegatingPasswordEncoder"/>
 		 <mybatis-spring:scan base-package="com.kh.spring" annotation="org.apache.ibatis.annotations.Mapper"/>
 </beans>

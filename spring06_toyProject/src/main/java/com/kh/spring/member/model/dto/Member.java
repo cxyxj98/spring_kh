@@ -3,6 +3,8 @@ package com.kh.spring.member.model.dto;
 
 import java.sql.Date;
 
+import lombok.Data;
+
 //DTO(DATA TRANSFER OBJECT)
 //데이터 전송 객체
 //데이터베이스로부터 얻어 온 데이터를 service(비지니스로직)으로 보낼 때 사용한 객체
@@ -22,6 +24,7 @@ import java.sql.Date;
 //CHAR, VARCHAR2 -> String
 //DATE -> java.util.Date, java.sql.Date
 //number -> int, double
+@Data
 public class Member {   
    
    private String userId;
@@ -33,74 +36,6 @@ public class Member {
    private Date regDate;
    private int isLeave;
    
-   public String getUserId() {
-      return userId;
-   }
-   
-   public void setUserId(String userId) {
-      this.userId = userId;
-   }
-   
-   public String getPassword() {
-      return password;
-   }
-   
-   public void setPassword(String password) {
-      this.password = password;
-   }
-   
-   public String getEmail() {
-      return email;
-   }
-   
-   public void setEmail(String email) {
-      this.email = email;
-   }
-   public String getGrade() {      
-      return grade;
-   }
-   
-   public void setGrade(String grade) {
-      this.grade = grade;
-   }
-   
-   public String getTell() {
-      return tell;
-   }
-   
-   public void setTell(String tell) {
-      this.tell = tell;
-   }
-   
-   public Date getRentableDate() {
-      return rentableDate;
-   }
-   
-   public void setRentableDate(Date rentableDate) {
-      this.rentableDate = rentableDate;
-   }
-   
-   public Date getRegDate() {
-      return regDate;
-   }
-   public void setRegDate(Date regDate) {
-      this.regDate = regDate;
-   }
-   
-   public int getIsLeave() {
-      return isLeave;
-   }
-   
-   public void setIsLeave(int isLeave) {
-      this.isLeave = isLeave;
-   }
-   
-   @Override
-   public String toString() {
-      return "Member [userId=" + userId + ", password=" + password + ", email=" + email + ", grade=" + grade
-            + ", tell=" + tell + ", rentableDate=" + rentableDate + ", regDate=" + regDate + ", isLeave=" + isLeave
-            + "]";
-   }
    
    
 }
