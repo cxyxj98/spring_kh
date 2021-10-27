@@ -17,4 +17,12 @@ public class AdminMemberService {
 	public List<Member> selectAllMembers(){
 		return adminMemberRepository.selectAllMembers();
 	}
+	
+	
+	
+	
+	
+	
+	
+
 }

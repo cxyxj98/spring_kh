@@ -2,11 +2,8 @@ package com.kh.spring.common.exception;
 
 import com.kh.spring.common.code.ErrorCode;
 
-public class HandlableException extends RuntimeException {
+public class HandlableException extends RuntimeException{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3930409458039432875L;
 	public ErrorCode error;
 	
@@ -19,11 +16,13 @@ public class HandlableException extends RuntimeException {
 		this.error = error;
 		e.printStackTrace();
 		this.setStackTrace(new StackTraceElement[0]);
-		
 	}
 	
 	
 	//1. 콘솔에 로그
-	//2. result.jsp를 사용해 사용자에게 알림메세지 띄워주기, 경로 재지정
-	//   발생한 예외별 에러 메세지와, 재지정할 경로가 필요
+	//2. resulst.jsp를 사용해 사용자에게 알림메시지 띄워주기, 경로 재지정
+	//	 발생한 예외별 에러 메세지와, 재지정할 경로	
+	
+
+
 }

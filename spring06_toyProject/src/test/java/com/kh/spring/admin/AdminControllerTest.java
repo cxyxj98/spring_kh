@@ -19,22 +19,26 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/**/*-context.xml"})
 public class AdminControllerTest {
-
 	
-	  
-	   @Autowired
-	   WebApplicationContext wac;
-	   MockMvc mockMvc;
-	   
-	   @Before
-	   public void setup() {
-	      this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-	   }
-	   
-	   @Test
-	   public void searchAllMembers() throws Exception {
-		   mockMvc.perform(get("/admin/member/member-list"))
-		   .andExpect(status().isOk())
-		   .andDo(print());
-	   }
+	@Autowired
+	WebApplicationContext wac;
+	MockMvc mockMvc;
+	
+	@Before
+	public void setup() {
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+	}
+	
+	@Test
+	public void searchAllMebers() throws Exception {
+		mockMvc.perform(get("/admin/member/member-list"))
+		.andExpect(status().isOk())
+		.andDo(print());
+	}
+	
+	
+	
+	
+	
+
 }

@@ -4,16 +4,16 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
   
   <configuration>
-  <settings>
-  	 <setting name="mapUnderscoreToCamelCase" value="true"/>
-  </settings>
-  
-  <typeAliases>
-  	<typeAlias alias="Member" type="com.kh.spring.member.model.dto.Member"/>
-  </typeAliases>
-  
+   <settings>
+  		<setting name="mapUnderscoreToCamelCase" value="true"/>
+  	</settings>
+  	<typeAliases>
+  		<typeAlias alias="Member" type="com.kh.spring.member.model.dto.Member"/>
+  	</typeAliases>
   	<mappers>
   		<mapper resource="mybatis/mapper/mybatisMapper.xml"/>
   	</mappers>
+
   
+ 
   </configuration>

@@ -2,7 +2,6 @@ package com.kh.spring.admin.controller;
 
 import java.util.List;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,16 @@ public class AdminMemberController {
 	@GetMapping("member/member-list")
 	public void searchAllMembers(Model model) {
 		List<Member> members = adminMemberService.selectAllMembers();
-			logger.debug(members.toString());
-			model.addAttribute("members",members);
-	
+		logger.debug(members.toString());
+		model.addAttribute("members", members);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

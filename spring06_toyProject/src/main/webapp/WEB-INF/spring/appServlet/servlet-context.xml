@@ -3,23 +3,80 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
-
+	<!-- 배치 어노테이션 추가 -->
+	<task:annotation-driven/>
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/file/**" location="file:///C:/CODE/before/upload/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<beans:bean class="com.kh.spring.common.interceptor.AuthInterceptor"/>
+		</interceptor>
+	</interceptors>
+	
+	<!-- 트랜잭션 관리 bean등록  : DataSourceTransactionManager -->
+	<beans:bean  class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
+		<beans:constructor-arg name="dataSource" ref="dataSource"/>
+	</beans:bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 트랜잭션 처리에 사용할 메서드 네임패턴과 트랜잭션 정책 -->
+			<!-- 
+				isolation : 격리레벨, 데이터에 작업이 수행되고 있을 때 해당 데이터를 격리 시키는 수준
+					***DEFAULT  : 데이터베이스의 격리리벨을 따라감
+					***READ_COMMITED : COMMIT이 끝난 데이터만 읽기를 허용
+					READ_UNCOMMITED : COMMIT이 끝나지 않은 데이터도 읽기를 허용
+					REPEATABLE_READ : SELECT문이 사용되는 데이터에 LOCK을 걸어 수정이 불가능하게 처리
+					SERIALIZABLE : SELECT문이 사용되는 데이터에 LOCK을 걸어 수정 및 입력이 불가능하게 처리
+
+				rollback-for : 어떤 예외가 발생했을 때 rollback 시킬지 지정
+				no-rollback-for : 어떤 예외가 발생했을 때 rollback 시키지 않을지 지정
+				propagation	: 전파속성, 기존 트랜잭션 유무 여부에 따라 새로운 트랜잭션을 생성하는 정책
+					***REQUIRED : 이미 진행중인 트랜잭션이 있으면 해당 트랜잭션에 포함, 아니면 새로운 트랜잭션 생성
+					REQUIRED_NEW : 항상 새로운 트랜잭션을 생성한다.
+					MANDATORY: 이미 진행중인 트랜잭션이 있어야만 작업을 수행, 없으면 예외를 발생시킴
+					NEVER : 진행중인 트랜잭션이 없어야만 작업을 수행, 있으면 예외를 발생시킴
+					NESTED : 진행중인 트랜잭션이 있으면 중첩된 트랜잭션 실행
+					SUPPORTS : 진행중인 트랜잭션이 있으면 트랜잭션에 포함, 없으면 트랜잭션을 생성하지 않음
+				read-only : 읽기 전용, DML이 발생하면 에러 발생시킴
+				timeout : 작업에 수행되는 시간이 지정한 시간을 넘기면 rollback 처리
+			 -->
+			<tx:method name="select*"  read-only="true"/>
+			<tx:method name="insert*" isolation="DEFAULT"  propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="Exception"/>
+			<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* com.kh.spring..*.*ServiceImpl.*(..))" id="txPointCut"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut"/>
+	</aop:config>
+	
+	<tx:annotation-driven/>
 	
 	<context:component-scan base-package="com.kh.spring" />
 	

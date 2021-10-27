@@ -8,8 +8,9 @@ import org.apache.ibatis.annotations.Select;
 import com.kh.spring.member.model.dto.Member;
 
 @Mapper
-public interface AdminMemberRepository{
-	
+public interface AdminMemberRepository {
+
 	@Select("select * from member")
 	List<Member> selectAllMembers();
+	
 }

@@ -9,16 +9,13 @@ import com.kh.spring.member.validator.JoinForm;
 
 @Mapper
 public interface MemberRepository {
-	
+
 	@Insert("insert into member(user_id,password,email,tell) values(#{userId},#{password},#{email},#{tell})")
 	void insertMember(JoinForm form);
 
-	@Select("select * from member where user_id = #{userId} and password = #{password}")
+	@Select("select * from member where user_id =#{userId} and password = #{password}")
 	Member authenticateUser(Member member);
-	
+
 	@Select("select * from member where user_id = #{userId}")
 	Member selectMemberByUserId(String userId);
-
-	
-
 }

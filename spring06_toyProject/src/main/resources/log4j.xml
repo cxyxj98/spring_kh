@@ -14,14 +14,12 @@
 		[[log4j Level]]
 		TRACE : 추적
 		DEBUG : 디버깅
-		INFO: 정보
+		INFO : 정보
 		WARN : 경고
 		ERROR : 에러
 		FATAL : 치명적
-	
-	
 	 -->
-
+	
 	<!-- Application Loggers -->
 	<logger name="com.kh.spring">
 		<level value="TRACE" />

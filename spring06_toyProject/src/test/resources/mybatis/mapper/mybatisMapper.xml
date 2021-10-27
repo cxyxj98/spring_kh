@@ -2,126 +2,107 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-<mapper namespace="com.kh.spring.mybatis.MybatisRepository">
-
-	<!--  
-		#{} vs ${}
-		#{} : PreparedStatement에서 쿼리템플릿을 완성 시킨 다음, 파라미터값을 전달받아 쿼리를 완성
-			  문자열 이스케이프처리가 자동으로 된다 -> SQL injection 공격에 안전하다
-			  
-		${} : 쿼리템플릿이 생성되는 시점에 파라미터로 전달된 값을 사용해서 쿼리템플릿을 완성
-			  문자열 이스케이프처리가 되지 않음 -> SQL injection 공격에 취약하다.
-	-->
-
-<resultMap type="map" id="rentData">
-		<!-- 
-			column : map에 담을 컬럼명
-			javaType : map에 어떤 타입의 데이터로 저장할 지 결정
-			property : map에 담을 때 사용할 키값
-		 -->
-		 <result column="user_id" javaType="string" property="userId"/>
-		 <result column="rm_idx" javaType="string" property="rmIdx"/>
-		 <result column="rb_idx" javaType="string" property="rbIdx"/>
-		 <result column="rent_book_cnt" javaType="int" property="rentBookCnt"/>
-		  <result column="bk_idx" javaType="string" property="bkIdx"/>
-		  <result column="rentable_date" javaType="date" property="rentableDate"/>
-</resultMap>
-
-	<select id="selectRentBookByUserId" resultMap="rentData">
-	select user_id,rm_idx,rb_idx,rent_book_cnt,bk_idx,rentable_date
-	from member
-	inner join rent_master using(user_id)
-	inner join rent_book using(rm_idx)
-	where user_id = #{userId}
-	</select>
-	
-	<insert id="insertWithDto">
-	insert into member(user_id, password, tell, email)
-	values(#{userId},#{password},#{tell},#{email})
-	</insert>
-	
-	<insert id="insertWithMap">
-		insert into rent_master(rm_idx,user_id,title,rent_book_cnt)
-		values(sc_rm_idx.nextval,#{member.userId},#{title},#{rentBookCnt})
-	</insert>
-	
-	<delete id ="delete">
-		delete from rent_master where user_id = #{userId}
-	</delete>
-	
-	<update id ="update">
-		update member set password = #{password} where user_id = #{userId}
-	</update>
-	
+  
+  <mapper namespace="com.kh.spring.mybatis.MybatisRepository">
+    <!-- 
+    	#{} vs ${}
+    	#{} : PreparedStatement에서 쿼리템플릿을 완성 시킨 다음, 파라미터값을 전달받아 쿼리를 완성
+    			문자열 이스케이프처리가 자동으로 된다. -> SQL injection 공격에 안전하다.
+    	${} : 쿼리템플릿이 생성되는 시점에 파라미터로 전달된 값을 사용해서 쿼리템플릿을 완성
+    			문자열 이스케이프처리가 되지 않음 -> SQL injection 공격에 취약하다.
+     -->
+    <resultMap type="map" id="rentData">
+    	<!-- 
+    		column : map에 담을 컬럼명
+    		javaType : map에 어떤 타입의 데이터로 저장할 지 결정
+    		property : map에 담을 때 사용할 키값
+    	 -->
+    	 <result column="user_id" javaType="string" property="userId"/>
+    	 <result column="rm_idx" javaType="string" property="rmIdx"/>
+    	 <result column="rb_idx" javaType="string" property="rbIdx"/>
+    	 <result column="rent_book_cnt" javaType="int" property="rentBookCnt"/>
+    	 <result column="bk_idx" javaType="string" property="bkIdx"/>
+    	 <result column="rentable_date" javaType="date" property="rentableDate"/>
+    </resultMap>
+    
+    <select id="selectRentBookByUserId" resultMap="rentData">
+    	select user_id, rm_idx, rb_idx, rent_book_cnt, bk_idx, rentable_date
+    	from member 
+    	inner join rent_master using(user_id)
+    	inner join rent_book using(rm_idx)
+		where user_id = #{userId}    
+    </select>
+    
+    <insert id="insertWithDto">
+    	insert into member(user_id, password, tell, email)
+    	values(#{userId},#{password},#{tell},#{email})
+    </insert>
+    
+    <insert id="insertWithMap">
+    	insert into rent_master(rm_idx,user_id,title,rent_book_cnt)
+    	values(sc_rm_idx.nextval,#{member.userId},#{title},#{rentBookCnt})
+    </insert>
+  
+  	<delete id="delete">
+  		delete from rent_master where user_id = #{userId}
+  	</delete>
+  
+    <update id="update">
+    	update member 
+    	set password = #{password}
+    	where user_id &lt;= #{userId}
+    </update>
+  
+  <!-- 
+  	마이바티스의 기본 statement 객체는 PreparedStatement 이다.
+    statementType 속성을 사용해 변경이 가능하다.
+    statement, prepared, callable
+   -->
+   <update id="procedure" statementType="CALLABLE">
+   		{call sp_rent_extend(#{rbIdx, mode=IN})}
+   </update>
+   
+   <insert id="procedureUseTypeHandler">
+   		{call sp_rent_insert(
+   			#{userId, mode=IN}
+   			,#{title, mode=IN}
+   			,#{rentBookCnt, mode=IN}
+   			,#{bkIdxs, mode=IN, typeHandler=com.kh.spring.common.mybatis.BkIdxsTypeHandler}
+   		)}
+   
+   </insert>
+  
 	<!-- 
-		마이바티스의 기본 statement 객체는 PreparedStatement 이다.
-		statementType 속성을 사용해 변경이 가능하다.
-		statement, prepared, callable
-		
-		mode=IN IN변수로 지정
-		=> procedure 매개변수의 in 변수라는 걸 의미
-	 -->
-	<update id ="procedure" statementType="CALLABLE">
-		{call sp_rent_extend(#{rbIdx,mode=IN})
-	</update>
-	
-	
-	<insert id="procedureUseTypeHandler">
-		{call sp_rent_insert(
-			#{userId, mode=IN}
-			,#{title,mode=IN}
-			,#{rentBookCnt,mode=IN}
-			,#{bkIdxs,mode=IN, typeHandler=com.kh.spring.common.mybatis.BkIdxsTypeHandler}
-		)
-	</insert>
-	<!--  
-	
-	   //1. 도서명 : 쿠키와 세션, 
-	   //    작가   : 김영아
-	   //    도서번호 : 시퀀스 사용
-	   //   인 도서를 BOOK 테이블에 저장하기
-	   //   메서드 이름 : test01
-	   
-	   -->
-	<insert id="test01">
-		 insert into book(bk_idx,author,title)
-		 values(sc_bk_idx.nextval,#{author},#{title})
-	</insert>
-	
-	<!-- 
-		 //2. 연장횟수가 2회 이상인 모든 대출도서 정보를
-	  	 //    연장횟수 0회로 초기화 해주세요.
-	 	  //  메서드 이름 : test02
-	 -->
-	<update id ="test02">
-		update rent_book
-		set  extension_cnt = 0
-		where extension_cnt >= 2
-	</update>
-	
-	<!-- 
-		//3. 2021년 9월 이후 10월 이전에 가입된 회원정보를 삭제
-	   //  메서드 이름 : test03
-	 -->
-	<delete id="test03">
-		delete from member 
-		where reg_date &lt; '2021/10/01'
-		and reg_date > '2021/09/01'
-	</delete>
-	<!-- 
-		 
-	   //4. 대출 횟수가 가장 많은 3권의 도서를 조회
-	   //  메서드 이름 : test04
-	 -->
-	<select id="test04" resultType="map">
-		select * from
-		(select b.*
-		from book b
-		order by rent_cnt desc)
-		where rownum &lt; 4
-	</select>
-	
+	//1. 도서명 : 쿠키와 세션, 
+	//	 작가   : 김영아
+	//	 도서번호 : 시퀀스 사용
+	//   인 도서를 BOOK 테이블에 저장하기
+	//   메서드 이름 : test01
+	 -->  
+	 <insert id="test01">
+	 	insert into book(bk_idx,title,author)
+	 	values(sc_bk_idx.nextval, #{title},#{author})
+	 </insert>
+	 
+	 <update id="test02">
+	 	update rent_book set extension_cnt = 0 
+	 	where extension_cnt >= 2
+	 </update>
+
+  	<delete id="test03">
+  		delete from member 
+  		where reg_date &lt;= '2021/10/01'
+  		and reg_date > '2021/09/01'
+  	</delete>
+  	
+  	<select id="test04" resultType="map">
+  		select  * from
+  		(select *
+  		from book  
+  		order by rent_cnt desc)
+		where rownum &lt; 4  	
+  	</select>
+
 	<select id="dynamicIf" resultType="map">
 		select * from book where
 		<if test="filter == 'info' ">
@@ -135,116 +116,108 @@
 	<select id="dynamicChoose" resultType="map">
 		select * from book where
 		<choose>
-			<when test="filter == 'info' ">
-			info like '%'||#{keyword}||'%'
+			<when test="filter=='info'">
+				info like '%'||#{keyword}||'%'
 			</when>
-			
-			<when test="filter=='author' ">
-			info like '%'||#{keyword}||'%'
+			<when test="filter=='author'">
+				author like '%'||#{keyword}||'%'
 			</when>
-			
 			<otherwise>
-				title like '%'||#{keyword}||'%'
+				title like '%'||#{keyword}||'%' 
 			</otherwise>
 		</choose>
 	</select>
-	
-	<select id="dynamicForeachAndWhereTag" resultType="map">
-		select * from book
-			<where>
-			<foreach collection="filters" item="filter">
-				<if test="filter == 'title'">
-					title like '%'||#{keyword}||'%'
-				</if>
-				
-				<if test="filter == 'author'">
-					or author like '%'||#{keyword}||'%'
-				</if>
-				
-				<if test="filter == 'info'">
-					or info like '%'||#{keyword}||'%'
-				</if>
-			</foreach>
-		</where>
-	</select>
-	
-	<select id="test05" resultType="map">
-		select * from book
-			<where>
-			<foreach collection="filters" item="filter">
-				<if test="filter == 'title'">
-					title like '%'||#{keyword}||'%'
-				</if>
-				
-				<if test="filter == 'author'">
-					and author like '%'||#{keyword}||'%'
-				</if>
-				
-				<if test="filter == 'info'">
-					and info like '%'||#{keyword}||'%'
-				</if>
-			</foreach>
-		</where>
-	</select>
-	
-	<select id="dynamicForeachWithList" resultType="map">
-		select * from book
-		where title in
-		<foreach collection="list" item="title" index="idx" open="(" close=")" separator=",">
-		#{title}
-		
-		</foreach>
-	</select>
-	
-	<insert id="insertTemplate">
-	insert into ${tableName}
-	<!-- collection에 담기는 객체가 map일 경우 index 속성에 선언한 변수에 key값이 담김 -->
-	<foreach collection="data" index="key" open="(" close=")" separator=",">
-		${key}
-	</foreach>
-	values
-	<foreach collection="data" item="val" open="(" close=")" separator=",">
-		#{val}
-	</foreach>
-	</insert>
-	
-	<insert id="insertTemplateBook">
-	insert into ${tableName}
-	<!-- collection에 담기는 객체가 map일 경우 index 속성에 선언한 변수에 key값이 담김 -->
-	<if test="sec == null">
-	<foreach collection="data" index="key" open="(" close=")" separator=",">
-		${key}
-	</foreach>
-	values
-	<foreach collection="data" item="val" open="(" close=")" separator=",">
-		#{val}
-	</foreach>
-	</if>
-	<if test="sec != null">
-	<foreach collection="data" index="key" open="(" close="," separator=",">
-		${key}
-	</foreach>
-	${sec.colName} )values
-	<foreach collection="data" item="val" open="(" close="," separator=",">
-		#{val}
-	</foreach>
-	${sec.val})
-	</if>
-	</insert>
-	
-	<update id="dynamicSet">
-		update member
-		<set>
-		<if test="password != null">
-			, password = #{password}
-		</if>
-		<if test="email != null">
-			,email = #{email}
-		</if>
-		<if test="tell != null">
-			,tell = #{tell}
-		</if>
-		where user_id = #{userId}
-		</set>
-	</update>
-</mapper>
+  
+   <select id="dynamicForeachAndWhereTag" resultType="map">
+   		select * from book
+   		<where>
+	   		<foreach collection="filters" item="filter">
+	   			<if test="filter == 'title' ">
+	   				or title like '%'||#{keyword}||'%'
+	   			</if>
+	   			<if test="filter == 'author' ">
+	   				or author like '%'||#{keyword}||'%'
+	   			</if>
+	   			<if test="filter == 'info' ">
+	   				or info like '%'||#{keyword}||'%'
+	   			</if>
+	   		</foreach>
+   		</where>
+   </select>
+  
+  <select id="test05" resultType="map">
+   		select * from book
+   		<where>
+	   		<foreach collection="filters" item="filter">
+	   			<if test="filter == 'title' ">
+	   				and title like '%'||#{keyword}||'%'
+	   			</if>
+	   			<if test="filter == 'author' ">
+	   				and author like '%'||#{keyword}||'%'
+	   			</if>
+	   			<if test="filter == 'info' ">
+	   				and info like '%'||#{keyword}||'%'
+	   			</if>
+	   		</foreach>
+   		</where>
+   </select>
+   
+  <select id="dynamicForeachWithList" resultType="map">
+  		select * from book
+  		where title in
+  		<foreach collection="list" item="title" index="idx" open="(" close=")" separator="," >
+  			#{title}
+  		</foreach>
+  </select>
+  
+  <insert id="insertTemplate" >
+  	insert into ${tableName}
+  	<!-- collection에 담기는 객체가 map일 경우 index 속성에 선언한 변수에 key값이 담김 -->
+  	<if test="sec == null">
+  		<foreach collection="data" index="key"  open="(" close=")" separator=",">
+			${key}  	
+  		</foreach>
+  		values
+  		<foreach collection="data" item="val" open="(" close=")" separator=",">
+  			#{val}
+  		</foreach>
+  	</if>
+  	<if test="sec != null">
+  		<foreach collection="data" index="key"  open="(" close="," separator=",">
+			${key}  	
+  		</foreach>
+  		${sec.colName} ) values
+  		<foreach collection="data" item="val" open="(" close="," separator=",">
+  			#{val}
+  		</foreach>
+  		${sec.val} )
+  	</if>
+  </insert>
+  
+  <update id="dynamicSet">
+  	update member
+  	<set>
+	  	<if test="password != null">
+	  		, password = #{password}
+	  	</if>
+	  	<if test="email != null">
+	  		, email = #{email}
+	  	</if>
+	  	<if test="tell != null">
+	  		, tell = #{tell}
+	  	</if>
+  		where user_id = #{userId}
+  	</set>
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </mapper>
+  

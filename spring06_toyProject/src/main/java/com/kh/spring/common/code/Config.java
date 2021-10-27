@@ -3,17 +3,19 @@ package com.kh.spring.common.code;
 public enum Config {
 	
 	//DOMAIN("https://pclass.ga"),
-	
 	DOMAIN("http://localhost:9090"),
-	COMPANY_EMAIL("cxyxj98@gmail.com"),
-	SMTP_AUTHENTICATION_ID("cxyxj98@gmail.com"),
-	SMTP_AUTHENTICATION_PASSWORD("ehdwls1219!"),
-	
-	UPLOAD_PATH("C:\\CODE\\upload\\");
-	
+	COMPANY_EMAIL("azimemory@gmail.com"),
+	SMTP_AUTHENTICATION_ID("azimemory@gmail.com"),
+	SMTP_AUTHENTICATION_PASSWORD("1234"),
+	//UPLOAD_PATH("C:\\CODE\\before\\"),
+	UPLOAD_PATH("C:\\CODE\\before\\upload\\");
+
 	public final String DESC;
 	
-	Config(String desc){
+	Config(String desc) {
 		this.DESC = desc;
 	}
+
+	
+	
 }

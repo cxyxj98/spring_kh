@@ -14,21 +14,32 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/**/*-context.xml"})
 public class MemberServiceTest {
-
-	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Test
 	public void passwordEncoderTest() {
-		String password= "123qwe!@#";
+		String password = "123qwe!@#";
+	
 		String encodedPassword = passwordEncoder.encode(password);
-		logger.debug(encodedPassword);
+		System.out.println((encodedPassword));
 		encodedPassword = passwordEncoder.encode(password);
 		logger.debug(encodedPassword);
 		
-		logger.debug("maches결과: "+passwordEncoder.matches(password, encodedPassword));
-		
+		logger.debug("matches 결과 : " + passwordEncoder.matches(password, encodedPassword));
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 }

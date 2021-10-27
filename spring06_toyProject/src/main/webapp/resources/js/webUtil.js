@@ -1,15 +1,11 @@
 /**
  * 
  */
-/*
-나중에 함수 불러쓸 때
-<script type="text/javascript" src="resources/js/webUtil.js"></script>*/
-let createPopup=(popInfo)=>{
+let createPopup = (popInfo) => {
+		let positionX = screen.width/2 - popInfo.width/2;
+		let positionY = screen.height/2 - popInfo.height/2;
 		
-		let positionX = screen.width/2 - (popInfo.width/2);
-		let positionY = screen.height/2 - (popInfo.height/2);
-		
-		let popup = open(popInfo.url,popInfo.name,`width=${popInfo.width},height=${popInfo.height},
-												left=${positionX},top=${positionY}`);
+		let popup = open(popInfo.url,popInfo.name,`width=${popInfo.width}
+												 , height=${popInfo.height},left=${positionX},top=${positionY}`);
 		return popup;
 	}
